@@ -1,0 +1,58 @@
+
+{% extends 'user/base.html' %}
+
+{% block title %}Suppliers List{% endblock %}
+
+{% block sidebar %} 
+<div class="sidebar">
+    <div class="sidebar-header text-center mb-4">
+        <h3>SCM Dashboard</h3>
+    </div>
+    <a href="/user/dashboard" >Dashboard</a>
+    <a href="/product/list">Inventory</a>
+    <a href="/purchaseorder/list">Orders</a>
+    <a href="/supplier/list" class="active">Suppliers</a>
+    <a href="#">Customers</a>
+    <a href="#">Reports</a>
+    <a href="#">Settings</a>
+</div>
+
+{% endblock %}
+{% block content %}
+
+
+    <div class="container-fluid">
+        <h2>Suppliers</h2>
+        <a href="{% url 'supplier_create' %}" class="btn btn-primary mb-3">Add Supplier</a>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>City</th>
+                    <th>Country</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for supplier in suppliers %}
+                <tr>
+                    <td>{{ supplier.name }}</td>
+                    <td>{{ supplier.email }}</td>
+                    <td>{{ supplier.phone_number }}</td>
+                    <td>{{ supplier.city }}</td>
+                    <td>{{ supplier.country }}</td>
+                    <td>
+                        <a href="{% url 'supplier_update' supplier.pk %}" class="btn btn-info btn-sm">Edit</a>
+                        <form action="{% url 'supplier_delete' supplier.pk %}" method="post" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

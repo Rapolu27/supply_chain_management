@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+{% load widget_tweaks %}
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supply Chain Management - Login</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+</head>
+<body>
+    {% include 'home/navbar.html' %}
+    <div class="container d-flex justify-content-center align-items-center min-vh-100">
+        <div class="card login-card shadow-lg p-4">
+            <h2 class="text-center mb-4">Login to Supply Chain Management</h2>
+            <form method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    {% render_field form.username class="form-control" placeholder="Enter Username" %}
+                    
+                </div>
+                <div class="form-group">
+                    {% render_field form.password1 class="form-control" placeholder="Enter Password" %}
+                    
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Login</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.6/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

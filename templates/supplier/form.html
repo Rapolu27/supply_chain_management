@@ -1,0 +1,30 @@
+{% extends 'user/base.html' %}
+
+{% block title %}Suppliers Form{% endblock %}
+
+{% block sidebar %} 
+<div class="sidebar">
+    <div class="sidebar-header text-center mb-4">
+        <h3>SCM Dashboard</h3>
+    </div>
+    <a href="/user/dashboard" >Dashboard</a>
+    <a href="/product/list">Inventory</a>
+    <a href="/purchaseorder/list">Orders</a>
+    <a href="/supplier/list" class="active">Suppliers</a>
+    <a href="#">Customers</a>
+    <a href="#">Reports</a>
+    <a href="#">Settings</a>
+</div>
+
+{% endblock %}
+{% block content %}
+    <div class="container-fluid">
+        <h2>{{ form.instance.pk|yesno:"Edit Supplier,Add Supplier" }}</h2>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-success">Save</button>
+            <a href="{% url 'supplier_list' %}" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+{% endblock %}

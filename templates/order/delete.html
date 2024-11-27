@@ -1,0 +1,33 @@
+{% extends 'user/base.html' %}
+
+{% block title %}Purchase Order Delete{% endblock %}
+
+{% block sidebar %} 
+<div class="sidebar">
+    <div class="sidebar-header text-center mb-4">
+        <h3>SCM Dashboard</h3>
+    </div>
+    <a href="/user/dashboard" >Dashboard</a>
+    <a href="/product/list" >Inventory</a>
+    <a href="/purchaseorder/list" class="active">Orders</a>
+    <a href="/supplier/list" >Suppliers</a>
+    <a href="#">Customers</a>
+    <a href="#">Reports</a>
+    <a href="#">Settings</a>
+</div>
+
+{% endblock %}
+{% block content %}
+    <div class="container-fluid">
+        <h2>Confirm Delete</h2>
+        <p>Are you sure you want to delete this purchase order?</p>
+        <p><strong>Supplier:</strong> {{ order.supplier.name }}</p>
+        <p><strong>Product:</strong> {{ order.product.name }}</p>
+        <p><strong>Quantity:</strong> {{ order.quantity }}</p>
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">Delete</button>
+            <a href="{% url 'purchase_order_list' %}" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+{% endblock %}

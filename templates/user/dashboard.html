@@ -1,0 +1,77 @@
+{% extends 'user/base.html' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block sidebar %} 
+<div class="sidebar">
+    <div class="sidebar-header text-center mb-4">
+        <h3>SCM Dashboard</h3>
+    </div>
+    <a href="/user/dashboard" class="active">Dashboard</a>
+    <a href="/product/list">Inventory</a>
+    <a href="/purchaseorder/list">Orders</a>
+    <a href="/supplier/list">Suppliers</a>
+    <a href="#">Customers</a>
+    <a href="#">Reports</a>
+    <a href="#">Settings</a>
+</div>
+
+{% endblock %}
+
+{% block content %}
+<!-- Dashboard Cards -->
+<div class="container-fluid">
+    <div class="row">
+        <!-- Card 1: Inventory -->
+        <div class="col-md-4">
+            <div class="card text-white bg-primary mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Inventory</h5>
+                    <p class="card-text">Total Items: 1500</p>
+                    <a href="#" class="btn btn-light btn-sm">View Details</a>
+                </div>
+            </div>
+        </div>
+        <!-- Card 2: Orders -->
+        <div class="col-md-4">
+            <div class="card text-white bg-success mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Orders</h5>
+                    <p class="card-text">Active Orders: 300</p>
+                    <a href="#" class="btn btn-light btn-sm">View Details</a>
+                </div>
+            </div>
+        </div>
+        <!-- Card 3: Suppliers -->
+        <div class="col-md-4">
+            <div class="card text-white bg-warning mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Suppliers</h5>
+                    <p class="card-text">Active Suppliers: 45</p>
+                    <a href="/supplier/list" class="btn btn-light btn-sm">View Details</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- More Content -->
+<div class="container-fluid">
+    <div class="row">
+        <!-- Chart or Graph Example -->
+        <div class="col-md-12">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Sales Overview</h5>
+                    <p class="card-text">Coming soon: Detailed graphs and analytics.</p>
+                    <div
+                        style="height: 300px; background: #f1f1f1; display: flex; justify-content: center; align-items: center;">
+                        <em>Graph Placeholder</em>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+{% endblock %}
