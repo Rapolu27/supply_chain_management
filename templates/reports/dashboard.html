@@ -1,0 +1,131 @@
+{% extends 'user/base.html' %}
+
+{% block title %}Reports{% endblock %}
+
+{% block sidebar %} 
+<div class="sidebar">
+    <div class="sidebar-header text-center mb-4">
+        <h3>SCM Dashboard</h3>
+    </div>
+    <a href="/user/dashboard" >Dashboard</a>
+    <a href="/product/list">Product</a>
+    <a href="/supplier/list">Suppliers</a>
+    <a href="/purchaseorder/list">Orders</a>
+    <a href="/inventory">Inventory</a>
+    <a href="/reports" class="active">Reports</a>
+    <a href="#">Settings</a>
+</div>
+
+{% endblock %}
+{% block content %}
+    <div class="container-fluid">
+    <h2>Reports</h2>
+
+    <!-- Report Type Tabs -->
+    <ul class="nav nav-tabs">
+        <li class="nav-item">
+            <a class="nav-link {% if report_type == 'purchase_orders' %}active{% endif %}" 
+               href="?report=purchase_orders&filter={{ selected_filter }}">Purchase Orders</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {% if report_type == 'supplier_ratings' %}active{% endif %}" 
+               href="?report=supplier_ratings">Supplier Ratings</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {% if report_type == 'inventory_status' %}active{% endif %}" 
+               href="?report=inventory_status">Inventory Status</a>
+        </li>
+    </ul>
+
+    <!-- Filters for Date Range -->
+    {% if report_type == 'purchase_orders' %}
+    <div class="d-flex mb-3 mt-3">
+        <form method="GET" action="">
+            <input type="hidden" name="report" value="purchase_orders">
+            <select name="filter" class="form-select" onchange="this.form.submit()">
+                <option value="1D" {% if selected_filter == '1D' %}selected{% endif %}>Last 1 Day</option>
+                <option value="1W" {% if selected_filter == '1W' %}selected{% endif %}>Last 1 Week</option>
+                <option value="1M" {% if selected_filter == '1M' %}selected{% endif %}>Last 1 Month</option>
+                <option value="3M" {% if selected_filter == '3M' %}selected{% endif %}>Last 3 Months</option>
+                <option value="6M" {% if selected_filter == '6M' %}selected{% endif %}>Last 6 Months</option>
+            </select>
+        </form>
+    </div>
+    {% endif %}
+
+    <!-- Report Content -->
+    {% if report_type == 'purchase_orders' %}
+    <h3>Purchase Orders</h3>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Product</th>
+                <th>Supplier</th>
+                <th>Quantity</th>
+                <th>Status</th>
+                <th>Order Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in purchase_orders %}
+                <tr>
+                    <td>{{ order.id }}</td>
+                    <td>{{ order.product.name }}</td>
+                    <td>{{ order.supplier.name }}</td>
+                    <td>{{ order.quantity }}</td>
+                    <td>{{ order.status }}</td>
+                    <td>{{ order.order_date }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% elif report_type == 'supplier_ratings' %}
+    <h3>Supplier Ratings</h3>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Supplier</th>
+                <th>Average Rating</th>
+                <th> Total units supplied</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for supplier in supplier_ratings %}
+                <tr>
+                    <td>{{ supplier.id }}</td>
+                    <td>{{ supplier.name }}</td>
+                    <td>{{ supplier.rating|default:"N/A" }}</td>
+                    <td>{{supplier.total_units_supplied}}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% elif report_type == 'inventory_status' %}
+    <h3>Inventory Status</h3>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Product</th>
+                <th>Stock</th>
+                <th>Min Stock</th>
+                <th>Max Stock</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in inventory %}
+                <tr>
+                    <td>{{ item.id }}</td>
+                    <td>{{ item.product.name }}</td>
+                    <td>{{ item.stock }}</td>
+                    <td>{{ item.min_stock }}</td>
+                    <td>{{ item.max_stock }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+</div>
+{% endblock %}

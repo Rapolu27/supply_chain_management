@@ -4,8 +4,12 @@ from django.contrib import messages
 from .models import Supplier, Product, PurchaseOrder, Inventory
 from .forms import SupplierForm, ProductForm, PurchaseOrderForm
 from scm_core.inventory_threshold import get_out_of_range_products, create_auto_purchase_orders
-from scm_core.data_helper import filter_already_scheduled_po
+from scm_core import data_helper
+from scm_core import reports_helper
+
 from datetime import datetime, timedelta
+
+
 # Create your views here.
 def home_view(request):
     # if request.user.is_authenticated:
@@ -139,7 +143,7 @@ def auto_generate_purchase_orders(request):
         inventory = Inventory.objects.all()
         # Get products out of range
         out_of_range_products = get_out_of_range_products(inventory)
-        filter_already_scheduled_po(PurchaseOrder, out_of_range_products)
+        data_helper.filter_already_scheduled_po(PurchaseOrder, out_of_range_products)
         # Fetch default supplier for the purchase orders (or let the user select a supplier)
         suppliers = Supplier.objects.all()  # Replace with supplier selection logic
         # Create purchase orders for products below min stock
@@ -159,3 +163,33 @@ def auto_generate_purchase_orders(request):
         "out_of_range_products": out_of_range_products,
         "purchase_orders": purchase_orders,
     })
+
+def reports_view(request):
+    # Determine the selected report type and filter type
+    report_type = request.GET.get('report', 'purchase_orders')  # Default report is purchase orders
+    filter_type = request.GET.get('filter', '1M')  # Default filter is 1M (1 Month)
+    start_date = data_helper.get_date_for_filters(filter_type)
+    context = {"selected_filter": filter_type, "report_type": report_type}
+    # Fetch data based on report type
+    if report_type == 'purchase_orders':
+        purchase_orders = PurchaseOrder.objects.filter(order_date__gte=start_date)
+        context["purchase_orders"] = purchase_orders
+    elif report_type == 'supplier_ratings':
+        reports_helper.calculate_supplier_units_and_ratings(Supplier, PurchaseOrder)
+        supplier_ratings = Supplier.objects.all().order_by('-rating', '-total_units_supplied')
+        # supplier_ratings = Supplier.objects.annotate(avg_rating=Avg('rating')).order_by('-avg_rating')
+        context["supplier_ratings"] = supplier_ratings
+    elif report_type == 'inventory_status':
+        inventory = Inventory.objects.all()
+        context["inventory"] = inventory
+
+    return render(request, "reports/dashboard.html", context)
+
+
+from django import template
+
+register = template.Library()
+
+@register.filter
+def to_range(value):
+    return range(1, value + 1)

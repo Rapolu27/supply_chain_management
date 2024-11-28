@@ -13,7 +13,8 @@ class Supplier(models.Model):
     company_name = models.CharField(max_length=100, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-
+    total_units_supplied = models.PositiveIntegerField(default=0)  # Total units supplied
+    rating = models.PositiveIntegerField(default=0)  # Rating out of 5
     def __str__(self):
         return f"{self.name} - {self.company_name if self.company_name else 'N/A'}"
 

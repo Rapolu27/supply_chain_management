@@ -24,5 +24,6 @@ urlpatterns = [
     path('supplier/', include('scm.supplier_urls')),
     path('product/', include('scm.product_urls')),
     path('purchaseorder/',include('scm.order_urls')),
+     path("reports", views.reports_view, name="reports_dashboard"),
     path('inventory', views.auto_generate_purchase_orders,name='auto_generate_purchase_orders')
 ]
