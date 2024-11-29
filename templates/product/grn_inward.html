@@ -1,0 +1,79 @@
+{% extends 'user/base.html' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block sidebar %} 
+<div class="sidebar">
+    <div class="sidebar-header text-center mb-4">
+        <h3>SCM Dashboard</h3>
+    </div>
+    <a href="/user/dashboard" class="active">Dashboard</a>
+    <a href="/product/list">products</a>
+    <a href="/supplier/list">Suppliers</a>
+    <a href="/purchaseorder/list">Purchase Orders</a>
+    <a href="/inventory">Inventory</a>
+    <a href="/reports">Reports</a>
+    <a href="/grn-inward">Grn Inward</a>
+</div>
+
+{% endblock %}
+
+{% block content %}
+<!-- Dashboard Cards -->
+<div class="container-fluid">
+    <h2 class="text-center">Goods Receipt Note (GRN) Inward</h2>
+    <p class="text-muted text-center">Showing products scheduled for delivery on {{ today }}</p>
+
+    <table class="table table-bordered table-striped mt-4">
+        <thead>
+            <tr>
+                <th>Product Name</th>
+                <th>Supplier</th>
+                <th>Quantity</th>
+                <th>Delivery Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in purchase_orders %}
+            <tr>
+                <td>{{ order.product.name }}</td>
+                <td>{{ order.product.supplier.name }}</td>
+                <td>{{ order.quantity }}</td>
+                <td>{{ order.delivery_date }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4" class="text-center">No products scheduled for delivery today.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    {% if purchase_orders %}
+    <div class="text-center">
+        <button id="trigger-grn" class="btn btn-primary">GRN Inward</button>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+    document.getElementById('trigger-grn').addEventListener('click', function () {
+        fetch("{% url 'trigger_grn_lambda' %}", {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                alert('GRN process completed successfully!');
+                location.reload();
+            } else {
+                alert('Error: ' + data.message);
+            }
+        })
+        .catch(error => alert('some error occurred'));
+    });
+</script>
+{% endblock %}

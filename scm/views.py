@@ -6,8 +6,10 @@ from .forms import SupplierForm, ProductForm, PurchaseOrderForm
 from scm_core.inventory_threshold import get_out_of_range_products, create_auto_purchase_orders
 from scm_core import data_helper
 from scm_core import reports_helper
-
-from datetime import datetime, timedelta
+import requests
+import json
+from django.http import JsonResponse
+from datetime import datetime,date,timedelta
 
 
 # Create your views here.
@@ -186,10 +188,33 @@ def reports_view(request):
     return render(request, "reports/dashboard.html", context)
 
 
-from django import template
+def grn_inward_view(request):
+    today = date.today()
 
-register = template.Library()
+    # Fetch all purchase orders for today with status 'pending'
+    purchase_orders = PurchaseOrder.objects.filter(
+        status='pending', delivery_date=today
+    ).select_related('product')
 
-@register.filter
-def to_range(value):
-    return range(1, value + 1)
+    context = {
+        'purchase_orders': purchase_orders,
+        'today': today,
+    }
+    return render(request, 'product/grn_inward.html', context)
+
+def trigger_grn_inward_view(request):
+    url = "https://s01swrn1lk.execute-api.ap-south-1.amazonaws.com/Staging/process-purchaseorders"
+    response = requests.post(url)
+    print('response: ', response)
+    if response.status_code == 200:
+        return JsonResponse({
+                'status': 'success',
+                'message': 'Lambda function executed successfully.',
+                'data': response.json(),
+            })
+    else:
+        print("Failed:", response.status_code, response.text)
+    return JsonResponse({
+                'status': 'error',
+                'message': response.text,
+    })
