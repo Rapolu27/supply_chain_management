@@ -87,13 +87,15 @@
             <th>Stock</th>
             <th>Min Stock Limit</th>
             <th>Max Stock Limit</th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
         {% for inv in inventories %}
-        <tr>
+
+        <tr class=""> 
             <td>{{ inv.product.name }}</td>
-            <td>{{ inv.stock }}</td>
+            <td>{{ inv.product.stock_quantity }}</td>
             <td>{{ inv.min_stock }}</td>
             <td>{{ inv.max_stock }}</td>
         </tr>

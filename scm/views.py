@@ -18,7 +18,7 @@ API_GATEWAY = os.getenv("SCM_API_GATEWAY","")+"/process-purchaseorders"
 
 def home_view(request):
     if request.user.is_authenticated:
-        return HttpResponseRedirect('postlogin') 
+        return redirect('/postlogin') 
     return render(request, 'home/base.html')
 
 def post_login_view(request):
@@ -26,7 +26,7 @@ def post_login_view(request):
         return render(request, 'home/base.html')
     if is_scm_user(request.user):
         return redirect('user/dashboard')
-    return redirect('admin')
+    return redirect('/admin')
 
 def is_scm_user(user):
     return user.groups.filter(name='SCM_USER').exists()
@@ -111,9 +111,11 @@ def product_create(request):
         else:
             form = ProductForm()
     except ProductException as e:
+        print("product ex: ",e)
         messages.error(request, str(e))
     except Exception as e:
-            messages.error(request, "Unable to create product")
+        print("product adding ex: ",e)
+        messages.error(request, "Unable to create product")
     return render(request, 'product/form.html', {'form': form})
 
 @login_required(login_url='user_login')
@@ -223,7 +225,7 @@ def auto_generate_purchase_orders(request):
     return render(request, "order/inventory.html", {
         "out_of_range_products": out_of_range_products,
         "purchase_orders": purchase_orders,
-        "invetories":inventories
+        "inventories":inventories
     })
 @login_required(login_url='user_login')
 def reports_view(request):

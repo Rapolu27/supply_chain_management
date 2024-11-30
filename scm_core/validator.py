@@ -43,7 +43,7 @@ def validate_price(value):
 def validate_product(product, Product):
     validate_unique_supplier_for_product(product, product.supplier, Product)
     validate_price(product.price)
-    validate_quantity(product.quantity)
+    validate_quantity(product.stock_quantity)
 
 def validate_supplier_name(name, Supplier):
     """Ensure supplier name is unique."""
