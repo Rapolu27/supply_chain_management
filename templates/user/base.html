@@ -110,7 +110,7 @@
     {% block sidebar %}
     <div class="sidebar">
         <div class="sidebar-header text-center mb-4">
-            <h3>SCM Dashboard</h3>
+            <h3>Supply Chain Management</h3>
         </div>
         <a href="/user/dashboard" class="active">Dashboard</a>
         <a href="/product/list">Product</a>
@@ -130,12 +130,12 @@
             <div class="container-fluid">
                 <a class="navbar-brand" href="#">Welcome, Admin</a>
                 <div class="top-bar">
-                    <div class="notifications">
+                    <!-- <div class="notifications">
                         <button class="btn btn-outline-secondary">Notifications</button>
-                    </div>
+                    </div> -->
                     <div class="user-info">
-                        <span>User: John Doe</span>
-                        <button class="btn btn-outline-primary ml-3">Logout</button>
+                        <span>User: {{user.username}}</span>
+                        <a href ="/logout" class="btn btn-outline-danger ml-3"> Logout </a>
                     </div>
                 </div>
             </div>

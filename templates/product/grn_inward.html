@@ -5,7 +5,7 @@
 {% block sidebar %} 
 <div class="sidebar">
     <div class="sidebar-header text-center mb-4">
-        <h3>SCM Dashboard</h3>
+        <h3>Supply Chain Management</h3>
     </div>
     <a href="/user/dashboard" class="active">Dashboard</a>
     <a href="/product/list">products</a>
@@ -21,6 +21,7 @@
 {% block content %}
 <!-- Dashboard Cards -->
 <div class="container-fluid">
+    {% include 'home/alert.html' %}
     <h2 class="text-center">Goods Receipt Note (GRN) Inward</h2>
     <p class="text-muted text-center">Showing products scheduled for delivery on {{ today }}</p>
 

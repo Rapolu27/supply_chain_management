@@ -5,7 +5,7 @@
 {% block sidebar %} 
 <div class="sidebar">
     <div class="sidebar-header text-center mb-4">
-        <h3>SCM Dashboard</h3>
+        <h3>Supply Chain Management</h3>
     </div>
     <a href="/user/dashboard" >Dashboard</a>
     <a href="/product/list">Product</a>
@@ -19,6 +19,7 @@
 {% endblock %}
 {% block content %}
     <div class="container-fluid">
+        {% include 'home/alert.html' %}
     <h2>Reports</h2>
 
     <!-- Report Type Tabs -->

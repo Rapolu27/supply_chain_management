@@ -1,4 +1,5 @@
 from django.shortcuts import render,get_object_or_404, redirect
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
 from django.contrib import messages
 from .models import Supplier, Product, PurchaseOrder, Inventory
@@ -14,22 +15,26 @@ from datetime import datetime,date,timedelta
 
 # Create your views here.
 def home_view(request):
-    # if request.user.is_authenticated:
-    #     return HttpResponseRedirect('postlogin') 
+    if request.user.is_authenticated:
+        return HttpResponseRedirect('postlogin') 
     return render(request, 'home/base.html')
 
 def post_login_view(request):
+    if not request.user.is_authenticated:
+        return render(request, 'home/base.html')
     if is_scm_user(request.user):
         return redirect('user/dashboard')
-    return redirect('/user/dashboard')
+    return redirect('admin')
 
 def is_scm_user(user):
     return user.groups.filter(name='SCM_USER').exists()
 
+@login_required(login_url='user_login')
 def supplier_list(request):
     suppliers = Supplier.objects.all()
     return render(request, 'supplier/list.html', {'suppliers': suppliers})
 
+@login_required(login_url='user_login')
 def supplier_create(request):
     if request.method == 'POST':
         form = SupplierForm(request.POST)
@@ -42,6 +47,7 @@ def supplier_create(request):
     
     return render(request, 'supplier/form.html', {'form': form})
 
+@login_required(login_url='user_login')
 def supplier_update(request, pk):
     supplier = get_object_or_404(Supplier, pk=pk)
     if request.method == 'POST':
@@ -55,6 +61,7 @@ def supplier_update(request, pk):
     
     return render(request, 'supplier/form.html', {'form': form})
 
+@login_required(login_url='user_login')
 def supplier_delete(request, pk):
     supplier = get_object_or_404(Supplier, pk=pk)
     if request.method == 'POST':
@@ -64,11 +71,11 @@ def supplier_delete(request, pk):
     
     return render(request, 'supplier/delete.html', {'supplier': supplier})
 
-
+@login_required(login_url='user_login')
 def product_list(request):
     products = Product.objects.all()
     return render(request, 'product/list.html', {'products': products})
-
+@login_required(login_url='user_login')
 def product_create(request):
     if request.method == 'POST':
         form = ProductForm(request.POST)
@@ -80,7 +87,7 @@ def product_create(request):
         form = ProductForm()
     
     return render(request, 'product/form.html', {'form': form})
-
+@login_required(login_url='user_login')
 def product_update(request, pk):
     product = get_object_or_404(Product, pk=pk)
     if request.method == 'POST':
@@ -93,7 +100,7 @@ def product_update(request, pk):
         form = ProductForm(instance=product)
     
     return render(request, 'product/form.html', {'form': form})
-
+@login_required(login_url='user_login')
 def product_delete(request, pk):
     product = get_object_or_404(Product, pk=pk)
     if request.method == 'POST':
@@ -103,7 +110,7 @@ def product_delete(request, pk):
     
     return render(request, 'product/delete.html', {'product': product})
 
-
+@login_required(login_url='user_login')
 def purchase_order_list(request):
     orders = PurchaseOrder.objects.all()
     return render(request, 'order/list.html', {'orders': orders})
@@ -117,7 +124,7 @@ def purchase_order_create(request):
     else:
         form = PurchaseOrderForm()
     return render(request, 'order/form.html', {'form': form})
-
+@login_required(login_url='user_login')
 def purchase_order_update(request, pk):
     order = get_object_or_404(PurchaseOrder, pk=pk)
     if request.method == 'POST':
@@ -128,7 +135,7 @@ def purchase_order_update(request, pk):
     else:
         form = PurchaseOrderForm(instance=order)
     return render(request, 'order/form.html', {'form': form})
-
+@login_required(login_url='user_login')
 def purchase_order_delete(request, pk):
     order = get_object_or_404(PurchaseOrder, pk=pk)
     if request.method == 'POST':
@@ -136,7 +143,7 @@ def purchase_order_delete(request, pk):
         return redirect('purchase_order_list')
     return render(request, 'order/delete.html', {'order': order})
 
-
+@login_required(login_url='user_login')
 def auto_generate_purchase_orders(request):
     out_of_range_products = None
     purchase_orders = None
@@ -165,7 +172,7 @@ def auto_generate_purchase_orders(request):
         "out_of_range_products": out_of_range_products,
         "purchase_orders": purchase_orders,
     })
-
+@login_required(login_url='user_login')
 def reports_view(request):
     # Determine the selected report type and filter type
     report_type = request.GET.get('report', 'purchase_orders')  # Default report is purchase orders
@@ -187,7 +194,7 @@ def reports_view(request):
 
     return render(request, "reports/dashboard.html", context)
 
-
+@login_required(login_url='user_login')
 def grn_inward_view(request):
     today = date.today()
 
@@ -201,7 +208,7 @@ def grn_inward_view(request):
         'today': today,
     }
     return render(request, 'product/grn_inward.html', context)
-
+@login_required(login_url='user_login')
 def trigger_grn_inward_view(request):
     url = "https://s01swrn1lk.execute-api.ap-south-1.amazonaws.com/Staging/process-purchaseorders"
     response = requests.post(url)

@@ -14,6 +14,7 @@
     <div class="container d-flex justify-content-center align-items-center min-vh-100">
         <div class="card login-card shadow-lg p-4">
             <h2 class="text-center mb-4">Login to Supply Chain Management</h2>
+           {% include 'home/alert.html' %}
             <form method="post">
                 {% csrf_token %}
                 <div class="form-group">

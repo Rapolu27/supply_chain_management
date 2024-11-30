@@ -6,7 +6,7 @@
 {% block sidebar %} 
 <div class="sidebar">
     <div class="sidebar-header text-center mb-4">
-        <h3>SCM Dashboard</h3>
+        <h3>Supply Chain Management</h3>
     </div>
     <a href="/user/dashboard" >Dashboard</a>
     <a href="/product/list">Product</a>
@@ -22,6 +22,7 @@
 
 
     <div class="container-fluid">
+        {% include 'home/alert.html' %}
         <h2>Suppliers</h2>
         <a href="{% url 'supplier_create' %}" class="btn btn-primary mb-3">Add Supplier</a>
         <table class="table table-striped">

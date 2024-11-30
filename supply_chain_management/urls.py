@@ -14,6 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
+from django.contrib.auth.views import LogoutView
 from django.urls import path, include
 from scm import views
 urlpatterns = [
@@ -27,5 +28,7 @@ urlpatterns = [
     path("reports", views.reports_view, name="reports_dashboard"),
     path('grn-inward', views.grn_inward_view,name='grn_inward'),
     path('trigger-grn-inward', views.trigger_grn_inward_view,name='trigger_grn_lambda'),
-    path('inventory', views.auto_generate_purchase_orders,name='auto_generate_purchase_orders')
+    path('inventory', views.auto_generate_purchase_orders,name='auto_generate_purchase_orders'),
+    path('logout', LogoutView.as_view(template_name='home/base.html'),name='logout'),
+
 ]

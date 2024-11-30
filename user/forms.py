@@ -7,7 +7,7 @@ class UserForm(UserCreationForm):
         model=User
         fields=['first_name', 'last_name','username','email']
 
-class SCMUser(forms.ModelForm):
+class SCMUserForm(forms.ModelForm):
     class Meta:
         model=models.SCMUser
         fields=['address','mobile']
