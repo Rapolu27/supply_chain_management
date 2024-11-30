@@ -29,3 +29,4 @@ def get_date_for_filters(filter_type):
     else:
         start_date = today - timedelta(days=30)  # Fallback to last month
     return start_date
+

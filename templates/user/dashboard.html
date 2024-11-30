@@ -27,8 +27,8 @@
         <div class="col-md-4">
             <div class="card text-white bg-primary mb-4">
                 <div class="card-body">
-                    <h5 class="card-title">Inventory</h5>
-                    <p class="card-text">Total Items: 1500</p>
+                    <h5 class="card-title">Products</h5>
+                    <p class="card-text">Total Items: {{metrics.total_products}}</p>
                     <a href="/product/list" class="btn btn-light btn-sm">View Details</a>
                 </div>
             </div>
@@ -38,7 +38,7 @@
             <div class="card text-white bg-success mb-4">
                 <div class="card-body">
                     <h5 class="card-title">Orders</h5>
-                    <p class="card-text">Active Orders: 300</p>
+                    <p class="card-text">Active Orders: {{metrics.active_orders}}</p>
                     <a href="/purchaseorder/list" class="btn btn-light btn-sm">View Details</a>
                 </div>
             </div>
@@ -48,7 +48,7 @@
             <div class="card text-white bg-warning mb-4">
                 <div class="card-body">
                     <h5 class="card-title">Suppliers</h5>
-                    <p class="card-text">Active Suppliers: 45</p>
+                    <p class="card-text">Active Suppliers: {{metrics.active_suppliers}}</p>
                     <a href="/supplier/list" class="btn btn-light btn-sm">View Details</a>
                 </div>
             </div>
@@ -63,12 +63,59 @@
         <div class="col-md-12">
             <div class="card mb-4">
                 <div class="card-body">
-                    <h5 class="card-title">Sales Overview</h5>
-                    <p class="card-text">Coming soon: Detailed graphs and analytics.</p>
-                    <div
-                        style="height: 300px; background: #f1f1f1; display: flex; justify-content: center; align-items: center;">
-                        <em>Graph Placeholder</em>
+                    <h5 class="card-title">Alerts</h5>
+                    <p class="card-text text-warning"><strong>Out of range products</strong></p>
+                    <div>
+                        <table class="table table-bordered table-striped mt-4">
+                            <thead>
+                                <tr>
+                                    <th>Product Name</th>
+                                    <th>StockInHand</th>
+                                    <th>MinLimit</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for inv in out_of_range %}
+                                <tr>
+                                    <td>{{ inv.product.name }}</td>
+                                    <td>{{ inv.product.stock_quantity }}</td>
+                                    <td>{{ inv.min_stock }}</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="4" class="text-center">No products are out of range.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
                     </div>
+                    <p class="card-text text-success"><strong>Purchase Orders delivering Today</strong></p>
+                    <div>
+                        <table class="table table-bordered table-striped mt-4">
+                            <thead>
+                                <tr>
+                                    <th>Product Name</th>
+                                    <th>Supplier</th>
+                                    <th>Quantity</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for order in total_deliveries %}
+                                <tr>
+                                    <td>{{ order.product.name }}</td>
+                                    <td>{{ order.product.supplier.name }}</td>
+                                    <td>{{ order.quantity }}</td>
+                                    <td>{{ order.delivery_date }}</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="4" class="text-center">No products are delivering today.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
                 </div>
             </div>
         </div>

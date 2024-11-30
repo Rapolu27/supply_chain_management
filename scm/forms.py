@@ -1,7 +1,13 @@
 # forms.py
 from django import forms
 from .models import Supplier, Product, PurchaseOrder
-
+from django.db import models
+from django.core.exceptions import ValidationError
+from scm_core.validator import (
+    validate_supplier_name, 
+    validate_supplier_mobile, 
+    validate_active_supplier
+)
 class SupplierForm(forms.ModelForm):
     class Meta:
         model = Supplier
@@ -24,6 +30,18 @@ class SupplierForm(forms.ModelForm):
             'company_name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Company Name'}),
         }
 
+    def clean_mobile(self):
+        mobile = self.cleaned_data.get('mobile')
+        validate_supplier_mobile(mobile)
+        return mobile
+
+    def clean(self):
+        cleaned_data = super().clean()
+        active = cleaned_data.get('active')
+        address = cleaned_data.get('address')
+        email = cleaned_data.get('email')
+        return cleaned_data
+
 class ProductForm(forms.ModelForm):
     class Meta:
         model = Product
@@ -36,6 +54,15 @@ class ProductForm(forms.ModelForm):
             'stock_quantity': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Stock Quantity'}),
             'supplier': forms.Select(attrs={'class': 'form-control'}),
         }
+        constraints = [
+            models.UniqueConstraint(fields=['name', 'supplier'], name='unique_product_supplier')
+        ]
+        def clean(self):
+            if self.quantity < 0:
+                raise ValidationError(("Quantity cannot be less than 0."))
+
+        def __str__(self):
+            return self.name
 
 class PurchaseOrderForm(forms.ModelForm):
     class Meta:

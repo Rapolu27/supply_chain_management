@@ -79,34 +79,24 @@ CSRF_COOKIE_SECURE=False
 
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
-""" 
-DATABASES = {
+
+""" DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
-}
- """
+} """
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': "scm",
-        'USER': "admin",
-        'PASSWORD': "Dc=u~phmm-!M%7m",
-        'HOST': "x22249346-scm-db.curvive2dban.ap-south-1.rds.amazonaws.com",
-        'PORT': 3306,
-    }
-}
-""" DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
         'NAME': os.environ['SCM_DB_SCHEMA'],
-        'USER': os.environ['SCM_DB_USERNAME'],
+        'USER': os.environ['SCM_DB_USER'],
         'PASSWORD': os.environ['SCM_DB_PASSWORD'],
         'HOST': os.environ['SCM_DB_HOST'],
         'PORT': os.getenv('SCM_DB_PORT', default=3306),
     }
-} """
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators

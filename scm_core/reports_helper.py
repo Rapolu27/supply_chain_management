@@ -1,16 +1,14 @@
 from collections import defaultdict
 
 def calculate_supplier_units_and_ratings(Supplier, PurchaseOrder):
-    # Dictionary to track total units per supplier
+
     supplier_units = defaultdict(int)
 
-    # Iterate over all purchase orders
     purchase_orders = PurchaseOrder.objects.all()
     for po in purchase_orders:
         supplier_id = po.supplier_id
-        supplier_units[supplier_id] += po.quantity  # Assuming `quantity` is a field in PurchaseOrder
+        supplier_units[supplier_id] += po.quantity
 
-    # Update each supplier's total units and rating
     for supplier_id, total_units in supplier_units.items():
         supplier = Supplier.objects.get(id=supplier_id)
         supplier.total_units_supplied = total_units
@@ -26,8 +24,6 @@ def calculate_supplier_units_and_ratings(Supplier, PurchaseOrder):
             supplier.rating = 4
         else:
             supplier.rating = 5
-
-        # Save updated supplier details
         supplier.save()
 
     print("Supplier units and ratings updated successfully.")

@@ -75,7 +75,12 @@
                     <td>{{ order.product.name }}</td>
                     <td>{{ order.supplier.name }}</td>
                     <td>{{ order.quantity }}</td>
-                    <td>{{ order.status }}</td>
+                    <td>{% if order.status == 'Pending' %} 
+                        <span class="badge badge-primary">Pending</span>
+                    {% else %}
+                        <span class="badge badge-success">Delivered</span>
+                    {% endif %}
+                </td>
                     <td>{{ order.order_date }}</td>
                 </tr>
             {% endfor %}

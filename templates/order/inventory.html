@@ -20,28 +20,84 @@
 {% block content %}
     <div class="container-fluid">
         {% include 'home/alert.html' %}
-<h2>Auto Purchase Orders</h2>
 
+
+
+<h3>Auto Purchase Orders</h3>
+{% if out_of_range_products and purchase_orders %}
 <form method="POST" action="{% url 'auto_generate_purchase_orders' %}">
     {% csrf_token %}
     <button type="submit" class="btn btn-primary">Auto Generate Purchase Orders</button>
 </form>
-
+{% else %}
+<p class=" p-3 "> No products in out of range</p>
+{% endif %}
 {% if out_of_range_products %}
-    <h3>Out of Range Products</h3>
-    <ul>
-        {% for product in out_of_range_products %}
-            <li>{{ product.product.name }} (Stock: {{ product.stock }}, Min: {{ product.min_stock }}, Max: {{ product.max_stock }})</li>
-        {% endfor %}
-    </ul>
+    <h4>Out of Range Products</h4>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Stock</th>
+                <th>Min Stock Limit</th>
+                <th>Max Stock Limit</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in out_of_range_products %}
+            <tr>
+                <td>{{ product.product.name }}</td>
+                <td>{{ product.stock }}</td>
+                <td>{{ product.min_stock }}</td>
+                <td>{{ product.max_stock }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 {% endif %}
 
 {% if purchase_orders %}
-    <h3>Generated Purchase Orders</h3>
-    <ul>
-        {% for po in purchase_orders %}
-            <li>Product ID: {{ po.product_id }}, Quantity: {{ po.quantity }}, Supplier ID: {{ po.supplier_id }}</li>
-        {% endfor %}
-    </ul>
+    <h4>Generated Purchase Orders</h4>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Quantity</th>
+                <th>Supplier</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for po in purchase_orders %}
+            <tr>
+                <td>{{ po.product_id }}</td>
+                <td>{{ po.quantity }}</td>
+                <td>{{ po.supplier_id }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
 {% endif %}
+
+<h4>Inventory MinMax Limits</h4>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Product</th>
+            <th>Stock</th>
+            <th>Min Stock Limit</th>
+            <th>Max Stock Limit</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for inv in inventories %}
+        <tr>
+            <td>{{ inv.product.name }}</td>
+            <td>{{ inv.stock }}</td>
+            <td>{{ inv.min_stock }}</td>
+            <td>{{ inv.max_stock }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
 {% endblock %}

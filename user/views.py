@@ -7,11 +7,15 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.auth.models import Group
 from django.http import HttpResponseRedirect
+from scm_core.exception import UserException
+from scm_core import validator
+from scm_core.inventory_threshold import get_out_of_range_products
 from .forms import SCMUserForm,UserForm
-
+from scm.models import Product, Supplier,Inventory, PurchaseOrder
+from datetime import date
 def login_view(request):
     if request.user.is_authenticated:
-        return HttpResponseRedirect('postlogin') 
+        return redirect('postlogin') 
     form = UserForm()
     try:
         if request.method == 'POST':
@@ -32,11 +36,24 @@ def login_view(request):
 
 @login_required(login_url='user_login')
 def dashboard_view(request):
-    return render(request, 'user/dashboard.html')
+    data = {}
+    try:
+        total_products = Product.objects.all().count()
+        active_orders = PurchaseOrder.objects.filter(status='Pending').count()
+        active_suppliers = Supplier.objects.all().count() 
+        data['metrics'] = {'total_products':total_products, 'active_orders':active_orders, 'active_suppliers':active_suppliers}
+        today_deliveries = PurchaseOrder.objects.filter(order_date=date.today())
+        data['today_deliveries'] = today_deliveries
+        out_of_range_products = get_out_of_range_products(Inventory.objects.all())
+        data['out_of_range'] = out_of_range_products
+    except Exception as e:
+        print("dashboard exception", e)
+        messages.error(request, "Unable to load metrics")
+    return render(request, 'user/dashboard.html', context=data)
 
-def  signup_view(request):
+def signup_view(request):
     if request.user.is_authenticated:
-        return HttpResponseRedirect('postlogin') 
+        return redirect('postlogin') 
     data = {}
     user_form = UserForm()
     scmuser_form = SCMUserForm() 
@@ -47,16 +64,21 @@ def  signup_view(request):
             if user_form.is_valid() and scmuser_form.is_valid():
                 user = user_form.save(commit=False)
                 scm_user =  scmuser_form.save(commit=False)
+                validator.validate_username(user.username)
+                validator.validate_mobile_number(scm_user.mobile)
+                validator.validate_address_length(scm_user.address)
                 user.save()
                 scm_user.user = user
                 scm_user.save()
-                customer_group = Group.objects.get_or_create(name='SCM_USER')
-                customer_group[0].user_set.add(user)
-                messages.success(request, "User account successfully!")
+                scm_user_group = Group.objects.get_or_create(name='SCM_USER')
+                scm_user_group[0].user_set.add(user)
+                messages.success(request, "Registration successfully!")
                 return HttpResponseRedirect('/user/login')
             else:
                 messages.error(request, user_form.errors)
                 messages.error(request, scmuser_form.errors)
+        except UserException as e:
+            messages.error(request, str(e))
         except Exception as e:
             print('signup exception: ',e)
             messages.error(request, 'unable to register')

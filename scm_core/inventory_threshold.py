@@ -10,7 +10,7 @@ def get_out_of_range_products(inventory):
     out_of_range = []
     print('inventories: ', inventory)
     for item in inventory:
-        if item.stock < item.min_stock or item.stock > item.max_stock:
+        if item.product.stock_quantity < item.min_stock or item.product.stock_quantity > item.max_stock:
             out_of_range.append(item)
     print('out_of_range_products: ', out_of_range)
     return out_of_range

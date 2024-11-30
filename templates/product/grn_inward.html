@@ -68,7 +68,8 @@
         .then(response => response.json())
         .then(data => {
             if (data.status === 'success') {
-                alert('GRN process completed successfully!');
+                // alert('GRN process completed successfully!');
+                alert(data.data.data)
                 location.reload();
             } else {
                 alert('Error: ' + data.message);
