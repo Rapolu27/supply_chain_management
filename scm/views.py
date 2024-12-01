@@ -148,7 +148,6 @@ def product_delete(request, pk):
         messages.error(request, str(e))
     except Exception as e:
         messages.error(request, "Unable to delete product")
-
     return render(request, 'product/delete.html', {'product': product})
 
 @login_required(login_url='user_login')
@@ -161,7 +160,9 @@ def purchase_order_create(request):
         if request.method == 'POST':
             form = PurchaseOrderForm(request.POST)
             if form.is_valid():
-                form.save()
+                po =form.save(commit=False)
+                validator.validate_purchaseorder(po, True)
+                po.save()
                 return redirect('purchase_order_list')
         else:
             form = PurchaseOrderForm()
@@ -178,7 +179,9 @@ def purchase_order_update(request, pk):
         if request.method == 'POST':
             form = PurchaseOrderForm(request.POST, instance=order)
             if form.is_valid():
-                form.save()
+                po = form.save(commit=False)
+                validator.validate_purchaseorder(po, False)
+                po.save()
                 return redirect('purchase_order_list')
         else:
             form = PurchaseOrderForm(instance=order)

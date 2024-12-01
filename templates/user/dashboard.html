@@ -100,7 +100,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for order in total_deliveries %}
+                                {% for order in today_deliveries %}
                                 <tr>
                                     <td>{{ order.product.name }}</td>
                                     <td>{{ order.product.supplier.name }}</td>

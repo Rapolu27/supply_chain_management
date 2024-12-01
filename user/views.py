@@ -42,8 +42,9 @@ def dashboard_view(request):
         active_orders = PurchaseOrder.objects.filter(status='Pending').count()
         active_suppliers = Supplier.objects.all().count() 
         data['metrics'] = {'total_products':total_products, 'active_orders':active_orders, 'active_suppliers':active_suppliers}
-        today_deliveries = PurchaseOrder.objects.filter(order_date=date.today())
+        today_deliveries = PurchaseOrder.objects.filter(delivery_date=date.today())
         data['today_deliveries'] = today_deliveries
+        print('total_deliveries', today_deliveries)
         out_of_range_products = get_out_of_range_products(Inventory.objects.all())
         data['out_of_range'] = out_of_range_products
     except Exception as e:

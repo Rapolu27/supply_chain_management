@@ -1,5 +1,6 @@
-from .exception import UserException, ProductException, SupplierException
+from .exception import UserException, ProductException, SupplierException, POException
 import re
+from datetime import date
 def validate_mobile_number(value):
     """Validate that the mobile number contains exactly 10 digits."""
     if not re.fullmatch(r'\d{10}', value):
@@ -59,3 +60,13 @@ def validate_active_supplier(supplier):
     """Ensure active suppliers have all required fields."""
     if supplier.active and (not supplier.address or not supplier.email):
         raise SupplierException("Active suppliers must have an email and address.")
+
+def validate_purchaseorder(po, create):
+    if(create and po.status !='Pending'):
+        raise POException("Status should be in Pending")
+    if(po.quantity < 0):
+        raise POException("Quantity should be greater than 0")
+    if(po.delivery_date < date.today()):
+        raise POException("Delivery date cannot be lessthan today")
+    if(po.supplier!= po.product.supplier):
+        raise POException("Supplier is not mapped to this product")
