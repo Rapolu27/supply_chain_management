@@ -24,14 +24,10 @@
 
 
 <h3>Auto Purchase Orders</h3>
-{% if out_of_range_products and purchase_orders %}
 <form method="POST" action="{% url 'auto_generate_purchase_orders' %}">
     {% csrf_token %}
     <button type="submit" class="btn btn-primary">Auto Generate Purchase Orders</button>
 </form>
-{% else %}
-<p class=" p-3 "> No products in out of range</p>
-{% endif %}
 {% if out_of_range_products %}
     <h4>Out of Range Products</h4>
     <table class="table table-striped">
